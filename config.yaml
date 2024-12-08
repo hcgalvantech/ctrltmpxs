@@ -1,0 +1,29 @@
+# config.yaml
+application:
+  name: "Examenes Finales - Instituto ALFA"
+  version: "1.0.0"
+
+database:
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  name: ${DB_NAME}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+
+email:
+  sender: "hcgalvantech@gmail.com"
+  service: "sendgrid"
+
+exam:
+  max_time_minutes: 120
+  allowed_extensions:
+    - .py
+    - .js
+    - .html
+    - .css
+
+security:
+  csrf_protection: true
+  rate_limit: 
+    requests: 100
+    per_minute: 5

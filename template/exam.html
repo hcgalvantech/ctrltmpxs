@@ -1,0 +1,51 @@
+<!-- templates/exam.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3>Examen Final</h3>
+                <div class="timer badge bg-danger" id="timer">120:00</div>
+            </div>
+            <div class="card-body">
+                <div class="exam-instructions" id="exam-readme">
+                    <!-- Contenido del README.md de GitHub -->
+                    {{ exam_instructions | safe }}
+                </div>
+
+                <hr>
+
+                <form id="exam-submission-form">
+                    <div class="mb-3">
+                        <label for="github-link" class="form-label">Link del Proyecto en GitHub</label>
+                        <input 
+                            type="url" 
+                            class="form-control" 
+                            id="github-link" 
+                            name="github-link" 
+                            placeholder="https://github.com/usuario/proyecto"
+                            required
+                        >
+                        <div class="form-text">
+                            Asegúrate de subir tu proyecto antes de enviar
+                        </div>
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary w-100" 
+                        id="submit-exam"
+                    >
+                        Enviar Proyecto
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/exam.js') }}"></script>
+{% endblock %}

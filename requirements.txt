@@ -1,0 +1,6 @@
+psycopg2-binary==2.9.10
+python-dotenv==1.0.1
+SQLAlchemy==2.0.36
+Flask==3.1.0
+sendgrid==6.11.0
+requests==2.32.3

@@ -1,0 +1,35 @@
+/* static/css/styles.css */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Arial', sans-serif;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.exam-instructions {
+    max-height: 400px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#exam-readme h1, #exam-readme h2 {
+    color: #007bff;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 10px;
+}
+
+#exam-readme code {
+    background-color: #f1f3f5;
+    padding: 2px 4px;
+    border-radius: 4px;
+}

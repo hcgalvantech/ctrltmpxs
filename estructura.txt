@@ -1,0 +1,44 @@
+E:\testerdev\Informatica\ctrltmpxs
+├── .env
+├── .gitattributes
+├── .gitignore
+├── config.yaml
+├── deploy.sh
+├── estructura.txt
+├── LICENSE
+├── logs
+|  └── app.log
+├── main.py
+├── README.md
+├── requirements.txt
+├── src
+|  ├── config.py
+|  ├── database.py
+|  ├── email_sender.py
+|  ├── exam_manager.py
+|  ├── logging_config.py
+|  ├── models.py
+|  ├── validators.py
+|  ├── __init__.py
+├── static
+|  ├── css
+|  |  └── styles.css
+|  ├── img
+|  └── js
+|     ├── exam.js
+|     ├── exam_timer.js
+|     ├── index.js
+|     └── main.js
+├── template
+|  ├── base.html
+|  ├── error.html
+|  ├── exam.html
+|  └── index.html
+└── tests
+|  ├── test_database.py
+|  ├── test_exam_manager.py
+|  └── __init__.py
+
+directory: 215 file: 993
+
+ignored: directory (5)
