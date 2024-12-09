@@ -2,6 +2,7 @@
 import os
 from dotenv import load_dotenv
 import secrets
+import logging
 
 load_dotenv()
 
@@ -21,3 +22,20 @@ class Config:
         # Optionally, write to .env file
         with open('.env', 'a') as f:
             f.write(f"\nFLASK_SECRET_KEY={SECRET_KEY}")
+    @classmethod
+    def validate(cls):
+        """
+        Validate configuration settings
+        Raises an exception if any critical configuration is missing
+        """
+        required_keys = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD']
+        missing_keys = [key for key in required_keys if not getattr(cls, key)]
+        
+        if missing_keys:
+            error_msg = f"Missing configuration keys: {', '.join(missing_keys)}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+        
+        # Additional validations can be added here
+        logging.info("Configuration validated successfully")
+        return True
