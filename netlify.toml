@@ -8,8 +8,11 @@
 
 [[redirects]]
   from = "/*"
-  to = "hcgalvantech/netlify/functions/handler.py"
+  to = "/.netlify/functions/flask_handler"
   status = 200
+
+[functions]
+  directory = "netlify/functions"
 
 [context.production.environment]
   APP_NAME = "Examenes Finales - Instituto ALFA"

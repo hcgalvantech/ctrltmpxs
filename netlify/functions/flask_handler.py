@@ -6,10 +6,14 @@ project_root = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(_
 sys.path.insert(0, project_root)
 
 import serverless_wsgi
+import json
 from main import app
 
 def handler(event, context):
-    # Log the incoming request path for debugging
-    print(f"Incoming path: {event.get('path', 'No path')}")
-    
-    return serverless_wsgi.handle_request(app, event, context)
+    try:
+        return serverless_wsgi.handle_request(app, event, context)
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)})
+        }
