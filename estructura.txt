@@ -1,12 +1,18 @@
 E:\testerdev\Informatica\ctrltmpxs
 ├── .env
+├── .env.txt
 ├── .gitattributes
 ├── .gitignore
+├── config.py
 ├── estructura.txt
 ├── LICENSE
 ├── logs
 |  └── app.log
 ├── main.py
+├── netlify
+|  └── functions
+|     └── handler.py
+├── netlify.toml
 ├── README.md
 ├── requirements.txt
 ├── src
@@ -22,8 +28,10 @@ E:\testerdev\Informatica\ctrltmpxs
 |  ├── css
 |  |  └── styles.css
 |  ├── img
+|  |  └── logo.png
 |  └── js
 |     ├── exam.js
+|     ├── exam.js.txt
 |     ├── exam_timer.js
 |     ├── index.js
 |     └── main.js
@@ -32,11 +40,7 @@ E:\testerdev\Informatica\ctrltmpxs
 |  ├── error.html
 |  ├── exam.html
 |  └── index.html
-└── tests
-|  ├── test_database.py
-|  ├── test_exam_manager.py
-|  └── __init__.py
 
-directory: 215 file: 993
+directory: 295 file: 1093
 
 ignored: directory (5)

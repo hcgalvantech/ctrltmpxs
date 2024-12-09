@@ -5,4 +5,5 @@ Flask==3.0.3
 sendgrid==6.11.0
 requests==2.32.3
 serverless-wsgi==3.0.2
+gunicorn==20.1.0
 
