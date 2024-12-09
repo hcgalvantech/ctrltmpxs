@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, jsonify
 from src.exam_manager import ExamManager
 from src.logging_config import setup_logging
@@ -7,13 +9,16 @@ import re
 import logging
 from datetime import datetime
 
+# Determine base directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Setup logging
 logger = setup_logging()
 
-# Asegúrate de especificar correctamente los directorios de templates y static
+# Configure Flask app with dynamic template and static paths
 app = Flask(__name__, 
-            template_folder='template',  # Carpeta de templates
-            static_folder='static')      # Carpeta de archivos estáticos
+            template_folder=os.path.join(BASE_DIR, 'template'),  
+            static_folder=os.path.join(BASE_DIR, 'static'))
 
 
 # Existing routes with added logging
@@ -281,6 +286,13 @@ def internal_server_error(e):
     return render_template('error.html', 
                            error_title='Error Interno del Servidor', 
                            error_message='Ocurrió un error inesperado'), 500
+
+# Add a catch-all route for Netlify
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    logger.info(f"Catching all route: {path}")
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.secret_key = Config.SECRET_KEY  # Add a secret key for flash messages

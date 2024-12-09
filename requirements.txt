@@ -5,41 +5,4 @@ Flask==3.0.3
 sendgrid==6.11.0
 requests==2.32.3
 serverless-wsgi==3.0.2
-```
 
-5. Modify your `main.py` to improve path handling:
-
-<antArtifact identifier="main-py" type="application/vnd.ant.code" language="python" title="Updated Main Application">
-import os
-from flask import Flask, render_template, request, jsonify
-from src.exam_manager import ExamManager
-from src.logging_config import setup_logging
-from src.config import Config
-from src.models import Alumno, Inscriptos, Tecnicatura, Turnos, Examen, Acceso
-import re
-import logging
-from datetime import datetime
-
-# Determine base directory
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Setup logging
-logger = setup_logging()
-
-# Configure Flask app with dynamic template and static paths
-app = Flask(__name__, 
-            template_folder=os.path.join(BASE_DIR, 'template'),  
-            static_folder=os.path.join(BASE_DIR, 'static'))
-
-# Rest of your existing main.py code remains the same...
-
-# Add a catch-all route for Netlify
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    logger.info(f"Catching all route: {path}")
-    return render_template('index.html')
-
-if __name__ == '__main__':
-    app.secret_key = Config.SECRET_KEY
-    app.run(debug=True)
