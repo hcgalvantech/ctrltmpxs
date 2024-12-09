@@ -2,8 +2,6 @@ E:\testerdev\Informatica\ctrltmpxs
 ├── .env
 ├── .gitattributes
 ├── .gitignore
-├── config.yaml
-├── deploy.sh
 ├── estructura.txt
 ├── LICENSE
 ├── logs

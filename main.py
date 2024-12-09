@@ -10,22 +10,23 @@ import logging
 from datetime import datetime
 from dotenv import load_dotenv
 
+# Get the absolute path of the project root
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, PROJECT_ROOT)
+
 # Load environment variables
 load_dotenv()
 
 # Validate configuration
 Config.validate()
 
-# Determine base directory
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # Setup logging
 logger = setup_logging()
 
 # Configure Flask app with dynamic template and static paths
 app = Flask(__name__, 
-            template_folder=os.path.join(BASE_DIR, 'template'),  
-            static_folder=os.path.join(BASE_DIR, 'static'))
+            template_folder=os.path.join(PROJECT_ROOT, 'template'),  
+            static_folder=os.path.join(PROJECT_ROOT, 'static'))
 
 # Configure Flask with settings from Config
 app.config.from_object(Config)
@@ -282,6 +283,19 @@ def check_exam_status():
             'message': 'Error interno del servidor'
         }), 500
                 
+# Add a catch-all route for client-side routing
+@app.route('/<path:path>')
+def catch_all(path):
+    logger.info(f"Catching route: {path}")
+    # Check if the requested template exists
+    template_path = os.path.join(PROJECT_ROOT, 'template', f'{path}.html')
+    
+    if os.path.exists(template_path):
+        return render_template(f'{path}.html')
+    
+    # If no specific template, default to index
+    return render_template('index.html')
+
 # Manejo de errores
 @app.errorhandler(404)
 def page_not_found(e):
@@ -297,12 +311,7 @@ def internal_server_error(e):
                            error_title='Error Interno del Servidor', 
                            error_message='Ocurrió un error inesperado'), 500
 
-# Add a catch-all route for Netlify
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    logger.info(f"Catching all route: {path}")
-    return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.secret_key = Config.SECRET_KEY  # Add a secret key for flash messages
