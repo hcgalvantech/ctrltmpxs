@@ -8,7 +8,7 @@
 
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/handler"
+  to = "/.netlify/functions"
   status = 200
 
 [context.production.environment]
