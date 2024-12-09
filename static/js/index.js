@@ -59,7 +59,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Start Exam Button
-    startExamButton.addEventListener('click', () => {
-        window.location.href = '/exam';
+    startExamButton.addEventListener('click', async () => {
+        // Obtener datos del estudiante almacenados previamente
+        const studentInfo = JSON.parse(localStorage.getItem('examInfo'));
+        
+        if (!studentInfo) {
+            alert('Por favor, valide su DNI primero');
+            return;
+        }
+    
+        try {
+            // Llamar a la ruta para iniciar examen
+            const response = await fetch('/start_exam', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    student_data: studentInfo 
+                })
+            });
+    
+            const data = await response.json();
+    
+            if (data.status === 'success') {
+                // Guardar access_id para usar en la página de examen
+                studentInfo.access_id = data.access_id;
+                localStorage.setItem('examInfo', JSON.stringify(studentInfo));
+                
+                // Redirigir a la página de examen
+                window.location.href = '/exam';
+            } else {
+                alert(data.message || 'No se pudo iniciar el examen');
+            }
+        } catch (error) {
+            console.error('Error al iniciar examen:', error);
+            alert('Hubo un problema al iniciar el examen');
+        }
     });
 })

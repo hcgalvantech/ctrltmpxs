@@ -11,21 +11,22 @@
             </div>
             <div class="card-body">
                 <div class="exam-instructions" id="exam-readme">
-                    <!-- Contenido del README.md de GitHub -->
-                    {{ exam_instructions | safe }}
+                    <!-- Contenido del README.md de GitHub 
+                    {{ exam_instructions | safe }} -->
+                    <a href="{{ exam_instructions | safe }}" target="_blank" class="btn btn-link">Pulsar click aquí para ir a las Instrucciones del Examen en Github</a>
                 </div>
 
                 <hr>
 
                 <form id="exam-submission-form">
                     <div class="mb-3">
-                        <label for="github-link" class="form-label">Link del Proyecto en GitHub</label>
+                        <label for="github-link" class="form-label">Pega el Link de tu Examen en GitHub</label>
                         <input 
                             type="url" 
                             class="form-control" 
                             id="github-link" 
                             name="github-link" 
-                            placeholder="https://github.com/usuario/proyecto"
+                            placeholder="Aquí pega el link https://github.com/usuario/proyecto"
                             required
                         >
                         <div class="form-text">

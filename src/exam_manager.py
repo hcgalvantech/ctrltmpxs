@@ -4,6 +4,11 @@ from sqlalchemy import and_
 from .database import DatabaseConnection
 from .models import Alumno, Inscriptos, Tecnicatura, Turnos, Examen, Acceso
 from .email_sender import send_exam_submission_email
+from src.logging_config import setup_logging
+import logging
+
+# Setup logging
+logger = setup_logging()
 
 class ExamManager:
     def __init__(self):
@@ -79,45 +84,111 @@ class ExamManager:
         finally:
             session.close()
 
-    def start_exam(self, student_data):
+    def start_exam(self, inscriptos_id):
         """Record exam access"""
         session = self.db.get_connection()
         try:
+            # Convertir a int si es necesario
+            inscriptos_id = int(inscriptos_id)
+            
+            # Verificar si ya existe un registro de acceso
+            existing_access = session.query(Acceso).filter_by(idins=inscriptos_id).first()
+            
+            if existing_access:
+                logger.warning(f"Acceso ya registrado para inscriptos_id: {inscriptos_id}")
+                # Crear una copia de los datos antes de cerrar la sesión
+                access_data = {
+                    'id': existing_access.id,
+                    'idins': existing_access.idins,
+                    'timestamp': existing_access.timestamp
+                }
+                session.close()
+                
+                # Recrear un objeto similar al original
+                new_access = Acceso()
+                new_access.id = access_data['id']
+                new_access.idins = access_data['idins']
+                new_access.timestamp = access_data['timestamp']
+                return new_access
+            
+            # Crear nuevo registro de acceso
             new_access = Acceso(
-                idins=student_data['inscriptos'].id,
-                timestamp=datetime.datetime.now()
+                idins=inscriptos_id,
+                acceso=datetime.datetime.now()
             )
+            
             session.add(new_access)
             session.commit()
-            return new_access
-        finally:
+            
+            # Obtener el ID antes de cerrar la sesión
+            access_id = new_access.id
+            
+            logger.info(f"Nuevo acceso registrado para inscriptos_id: {inscriptos_id}, ID: {access_id}")
+            
+            # Crear un objeto desconectado para devolver
+            disconnected_access = Acceso()
+            disconnected_access.id = access_id
+            disconnected_access.idins = inscriptos_id
+            disconnected_access.acceso = new_access.acceso
+            
+            # Cerrar la sesión
             session.close()
-
+            
+            return disconnected_access
+        
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error registrando acceso: {str(e)}", exc_info=True)
+            session.close()
+            raise
+                    
     def submit_exam(self, access_id, github_link):
-        """Submit exam and send confirmation email"""
+        """Submit exam and update access record"""
         session = self.db.get_connection()
         try:
+            # Convertir access_id a int si es necesario
+            access_id = int(access_id)
+            
+            # Buscar registro de acceso
             access_record = session.query(Acceso).filter_by(id=access_id).first()
-            if access_record:
-                access_record.hora = datetime.datetime.now()
-                access_record.link = github_link
-                session.commit()
-
-                # Get student email
-                inscriptos = session.query(Inscriptos).filter_by(id=access_record.idins).first()
-                
-                # Send email
-                send_exam_submission_email(
-                    inscriptos.email, 
-                    access_record.hora, 
-                    github_link
-                )
-
-                return True
+            
+            # Validar que el registro exista
+            if not access_record:
+                logger.error(f"No access record found for access_id: {access_id}")
+                session.close()
+                return False
+            
+            # Actualizar registro con hora actual y enlace de GitHub
+            access_record.hora = datetime.datetime.now()
+            access_record.link = github_link
+            
+            # Confirmar cambios
+            session.commit()
+            
+            # Obtener información del estudiante
+            inscriptos = session.query(Inscriptos).filter_by(id=access_record.idins).first()
+            
+            # Enviar correo de confirmación
+            if inscriptos and inscriptos.email:
+                try:
+                    send_exam_submission_email(
+                        inscriptos.email, 
+                        access_record.hora, 
+                        github_link
+                    )
+                except Exception as email_error:
+                    logger.error(f"Error sending confirmation email: {str(email_error)}")
+            
+            logger.info(f"Exam submitted successfully for access_id: {access_id}")
+            return True
+        
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error in submit_exam: {str(e)}", exc_info=True)
             return False
         finally:
             session.close()
-
+                        
     def get_exam_instructions(self, exam_id):
         """Retrieve exam README instructions"""
         session = self.db.get_connection()
