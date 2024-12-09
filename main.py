@@ -1,5 +1,5 @@
 import os
-
+import sys
 from flask import Flask, render_template, request, jsonify
 from src.exam_manager import ExamManager
 from src.logging_config import setup_logging
@@ -8,6 +8,13 @@ from src.models import Alumno, Inscriptos, Tecnicatura, Turnos, Examen, Acceso
 import re
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Validate configuration
+Config.validate()
 
 # Determine base directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +26,9 @@ logger = setup_logging()
 app = Flask(__name__, 
             template_folder=os.path.join(BASE_DIR, 'template'),  
             static_folder=os.path.join(BASE_DIR, 'static'))
+
+# Configure Flask with settings from Config
+app.config.from_object(Config)
 
 
 # Existing routes with added logging

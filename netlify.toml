@@ -12,5 +12,13 @@
   status = 200
 
 [context.production.environment]
-  APPLICATION_NAME = "Examenes Finales - Instituto ALFA"
-  APPLICATION_VERSION = "1.0.0"
+  # Default values - these should be overridden in Netlify's UI
+  APP_NAME = "Examenes Finales - Instituto ALFA"
+  APP_VERSION = "1.0.0"
+  MAX_EXAM_TIME_MINUTES = "120"
+  ALLOWED_EXTENSIONS = ".py,.js,.html,.css"
+  CSRF_PROTECTION = "true"
+  RATE_LIMIT_REQUESTS = "100"
+  RATE_LIMIT_PER_MINUTE = "5"
+  EMAIL_SENDER = "hcgalvantech@gmail.com"
+  EMAIL_SERVICE = "sendgrid"
