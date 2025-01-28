@@ -189,11 +189,42 @@ class ExamManager:
         finally:
             session.close()
                         
+    # def get_exam_instructions(self, exam_id):
+    #    """Retrieve exam README instructions"""
+    #    session = self.db.get_connection()
+    #    try:
+    #        exam = session.query(Examen).filter_by(id=exam_id).first()
+    #        return exam.exalink if exam else None
+    #    finally:
+    #        session.close()
+            
+
     def get_exam_instructions(self, exam_id):
         """Retrieve exam README instructions"""
         session = self.db.get_connection()
         try:
-            exam = session.query(Examen).filter_by(id=exam_id).first()
-            return exam.exalink if exam else None
+            # Log de depuración para ver el valor de exam_id
+            logger.info(f"Buscando instrucciones de examen para ID: {exam_id}")
+            
+            # Buscar el exalink a través de la relación con Turnos
+            exam = (
+                session.query(Examen)
+                .join(Turnos, Turnos.idexa == Examen.id)
+                .filter(Turnos.idexa == exam_id)
+                .first()
+            )
+            
+            if not exam:
+                logger.error(f"No se encontraron instrucciones para Exam ID: {exam_id}")
+                return None
+            
+            # Log de depuración para ver el exalink recuperado
+            logger.info(f"Exalink encontrado: {exam.exalink}")
+            
+            # Devolver el exalink
+            return exam.exalink
+        except Exception as e:
+            logger.error(f"Error al obtener instrucciones de examen: {str(e)}", exc_info=True)
+            return None
         finally:
             session.close()
